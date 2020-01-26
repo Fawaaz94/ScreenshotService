@@ -1,0 +1,125 @@
+﻿@model AzureClassLibrary.BlobEntity
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<!-- Save To Queue -->
+<div style="text-align: center">
+    <form method="post">
+        <fieldset>
+            <div class="row">
+
+                    <div class="form-group">
+                        <label for="uploadlinks">Links</label>
+                        <input class="form-control" type="text" name="uploadlinks" value="" />
+                    </div>
+                
+
+                
+                    <div class="form-group">
+                        <input type="submit" value="Submit" class="btn btn-block btn-primary" />
+                    </div>
+                
+
+            </div>
+        </fieldset>
+    </form>
+
+    <h2 class="text-success">@Html.Raw(ViewBag.Message)</h2>
+</div>
+
+<!-- Save To Local -->
+<div class="saveToLocal">
+    <label for="saveFile">Name of Screenshot to Save</label>
+    <input class="form-control" type="text" name="screenshotName" id="screenshotName" />
+
+    <button id="saveBlob">Submit</button>
+
+</div>
+
+<br />
+
+<!-- Query Data -->
+<div class="query-data">
+
+    <input class="blob_button" type="button" id="GetBlobData" value="Click for Blob data" />
+
+    <p id="mytext" />
+
+</div>
+
+
+<script src="https://code.jquery.com/jquery-2.2.4.min.js"
+        integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+        crossorigin="anonymous">
+</script>
+
+<script>
+
+     $("#saveBlob").click(function () {
+            var value = $("#screenshotName").val();
+            var postData = { screenshot: value };
+
+            $.ajax({
+                url: "@Url.Action("SaveResults", "Test")",
+                type: 'POST',
+                data: postData,
+                success: function (data, textStatus, jqXHR) {
+                    console.log("Successfull!");
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log("Unsuccessful! It seems like something went wrong");
+                }
+            });
+     });
+
+      $(document).ready(function () {
+            $("#GetBlobData").click(function () {
+                $.getJSON('@Url.Action("RetrieveResults", "Test")',
+                    function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            document.getElementById("mytext").innerHTML = "";
+                            document.getElementById("mytext").innerHTML += "<ul> <li>" + data[i].name + "</ul> </li>";
+                        }
+                            
+
+                    });
+            });
+     });
+
+
+  
+      @*$(document).ready(function () {
+            $("#GetBlobData").click(function () {
+                $.getJSON('@Url.Action("RetrieveResults", "Test")',
+                    function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            document.getElementById("mytext").innerHTML += "<ul> <li>" + data[i].name + "</ul> </li>";
+                        }
+                            
+
+                    });
+            });
+     });*@
+
+</script>
+
+<style>
+    .row{
+        display: inline-block;
+    }
+
+    .query-data {
+        margin-top: 20px
+    }
+
+    .saveToLocal {
+        text-align: center;
+    }
+
+    .saveToLocal .blob_button {
+        text-align: center;
+    }
+</style>
+
